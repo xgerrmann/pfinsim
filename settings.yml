@@ -1,0 +1,20 @@
+taxes:
+# https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/recht-op-hypotheekrenteaftrek
+  mortgage_interest_deduction:
+    2020: 46%
+    2021: 43%
+    2022: 40%
+    2023: 37.05%
+  cost_of_home_ownership: 0.65% # eigen woning forfait (voor WOZ <= 1.080.000E)
+economy:
+  inflation: 3.15
+mortgage:
+  duration: 30 # years
+  size: 300000
+  interest_rate: 1.7%
+  interest_discount: 15%
+  interest_discount_bounds: [0.5, 1]
+  type: 'linear'
+simulation:
+  step_size: 'month'
+  length: 30 # years
