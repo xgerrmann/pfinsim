@@ -14,7 +14,8 @@ mortgage:
   interest_rate: 1.7%
   interest_discount: 15%
   interest_discount_bounds: [0.5, 1]
-  type: 'linear'
+#  type: 'linear'
+  type: 'annuity'
 simulation:
   step_size: 'month'
   length: 30 # years
