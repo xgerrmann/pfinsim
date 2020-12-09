@@ -13,33 +13,33 @@ class Taxes:
 
     def income_gross_to_nett(self, gross):
         nett = 0
-        # TODO: dont append, but cipy, otherwise array will gro with each call
-        self.income_tax_brackets.append(np.inf)
-        for ii, left_bracket in enumerate(self.income_tax_brackets[:-1]):
+        tax = 0
+        brackets = self.income_tax_brackets + [np.inf]
+        for ii, left_bracket in enumerate(brackets[:-1]):
             rate = self.income_tax_rates[ii]
-            right_bracket = min(self.income_tax_brackets[ii + 1], gross)
+            right_bracket = min(brackets[ii + 1], gross)
             bucket_size = right_bracket - left_bracket
             if bucket_size <= 0:
                 break
-            nett += bucket_size * (1 - rate)
-        return nett
+            bucket_tax = bucket_size * rate
+            nett += bucket_size - bucket_tax
+            tax += bucket_tax
+        return nett, tax
 
     def calc_work_tax_discounts(self, gross):
-        # TODO: dont append, but cipy, otherwise array will gro with each call
-        self.work_tax_brackets.append(np.inf)
-        for ii, left_bracket in enumerate(self.work_tax_brackets):
+        brackets = self.work_tax_brackets + [np.inf]
+        for ii, left_bracket in enumerate(brackets):
             rate = self.work_tax_rates[ii]
             base_amount = self.work_tax_base_amounts[ii]
-            right_bracket = self.work_tax_brackets[ii + 1]
+            right_bracket = brackets[ii + 1]
             if left_bracket <= gross <= right_bracket:
                 work_tax_discount = base_amount + rate * (gross - left_bracket)
                 return work_tax_discount
 
     def calc_general_tax_discount(self, gross):
-        # TODO: dont append, but cipy, otherwise array will gro with each call
-        self.general_tax_discount_brackets.append(np.inf)
-        for ii, left_bracket in enumerate(self.general_tax_discount_brackets):
-            right_bracket = self.general_tax_discount_brackets[ii+1]
+        brackets = self.general_tax_discount_brackets + [np.inf]
+        for ii, left_bracket in enumerate(brackets):
+            right_bracket = brackets[ii+1]
             rate = self.general_tax_discount_rates[ii]
             if left_bracket <= gross <= right_bracket:
                 print(f'left: {left_bracket}, right: {right_bracket}, rate: {rate}')

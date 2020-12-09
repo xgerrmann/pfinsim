@@ -14,15 +14,18 @@ def test_income_taxes_zero():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 0
-    assert taxes.income_gross_to_nett(gross) == 0
-
+    nett, tax = taxes.income_gross_to_nett(gross)
+    assert nett == 0
+    assert tax == 0
 
 def test_income_taxes_left_bracket():
     settings = load_settings('../settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 68508
-    assert pytest.approx(taxes.income_gross_to_nett(gross), 1e-6) == 42920.262
+    nett, tax = taxes.income_gross_to_nett(gross)
+    assert pytest.approx(nett, 1e-6) == 42920.262
+    assert pytest.approx(tax, 1e-6) == 25587.738
 
 
 def test_income_taxes_right_bracket():
@@ -30,7 +33,9 @@ def test_income_taxes_right_bracket():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 100000
-    assert pytest.approx(taxes.income_gross_to_nett(gross), 1e-6) == 58823.722
+    nett, tax = taxes.income_gross_to_nett(gross)
+    assert pytest.approx(nett, 1e-6) == 58823.722
+    assert pytest.approx(tax, 1e-6) == 41176.278
 
 
 def test_work_tax_discount_zero():
