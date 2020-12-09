@@ -1,6 +1,7 @@
 import pytest
 
-from main import load_settings, Taxes
+from main import load_settings
+from taxes import Taxes
 
 
 def test_load_settings():
@@ -40,11 +41,19 @@ def test_work_tax_discount_zero():
     assert taxes.calc_work_tax_discounts(gross) == 0
 
 
-def test_work_tax_discount_too_high():
+def test_work_tax_discount_max():
     settings = load_settings('../settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 98604
+    assert taxes.calc_work_tax_discounts(gross) == 0
+
+
+def test_work_tax_discount_too_high():
+    settings = load_settings('../settings.yml')
+    tax_parameters = settings['taxes']
+    taxes = Taxes(tax_parameters)
+    gross = 200000
     assert taxes.calc_work_tax_discounts(gross) == 0
 
 
@@ -54,3 +63,27 @@ def test_work_tax_discount_50k():
     taxes = Taxes(tax_parameters)
     gross = 50000
     assert pytest.approx(taxes.calc_work_tax_discounts(gross), 1e-6) == 2916.24
+
+
+def test_general_tax_discount_zero():
+    settings = load_settings('../settings.yml')
+    tax_parameters = settings['taxes']
+    taxes = Taxes(tax_parameters)
+    gross = 0
+    assert pytest.approx(taxes.calc_general_tax_discount(gross), 1e-6) == 2711
+
+
+def test_general_tax_discount_50k():
+    settings = load_settings('../settings.yml')
+    tax_parameters = settings['taxes']
+    taxes = Taxes(tax_parameters)
+    gross = 50000
+    assert pytest.approx(taxes.calc_general_tax_discount(gross), 1e-6) == 1049.72792
+
+
+def test_general_tax_discount_too_high():
+    settings = load_settings('../settings.yml')
+    tax_parameters = settings['taxes']
+    taxes = Taxes(tax_parameters)
+    gross = 100000
+    assert pytest.approx(taxes.calc_general_tax_discount(gross), 1e-6) == 0

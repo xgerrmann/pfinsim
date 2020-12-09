@@ -15,12 +15,12 @@ taxes:
   work_discount:
     # https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/tabel-arbeidskorting-2020
     brackets: [0, 9921, 21430, 34954, 98604]
-    rates: [0.02812, 0.28812, 0.01656, -0.06]
+    rates: [0.02812, 0.28812, 0.01656, -0.06, 0.0]
     base_amounts: [0, 279, 3595, 3819, 0]
   regular_tax_discount:
     brackets: [0, 20711, 68507]
-    minimum: 2711
-    rate: -0.05672
+    base_amount: [2711, 2711, 0]
+    rates: [0, -0.05672, 0]
 economy:
   inflation: 3.15
 mortgage:
