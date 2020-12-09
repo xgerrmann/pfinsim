@@ -3,14 +3,13 @@ from enum import Enum
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 import yaml
 
-settings_file = 'settings.yml'
 
-
-def load_settings():
-    with open(settings_file) as file:
+def load_settings(file_name='settings.yml'):
+    with open(file_name) as file:
         settings = yaml.load(file, Loader=yaml.FullLoader)
     return settings
 
@@ -62,37 +61,92 @@ class Mortgage:
         return self._size
 
 
+class Taxes:
+    def __init__(self, tax_parameters):
+        self.income_tax_brackets = tax_parameters['income_tax']['brackets']
+        self.income_tax_rates = tax_parameters['income_tax']['rates']
+        self.work_tax_brackets = tax_parameters['work_discount']['brackets']
+        self.work_tax_rates = tax_parameters['work_discount']['rates']
+        self.work_tax_base_amounts = tax_parameters['work_discount']['base_amounts']
+
+    def income_gross_to_nett(self, gross):
+        nett = 0
+        # TODO: dont append, but cipy, otherwise array will gro with each call
+        self.income_tax_brackets.append(np.inf)
+        for ii, left_bracket in enumerate(self.income_tax_brackets[:-1]):
+            rate = self.income_tax_rates[ii]
+            right_bracket = min(self.income_tax_brackets[ii + 1], gross)
+            bucket_size = right_bracket - left_bracket
+            if bucket_size <= 0:
+                break
+            nett += bucket_size * (1 - rate)
+        return nett
+
+    def calc_work_tax_discounts(self, gross):
+        # TODO: dont append, but cipy, otherwise array will gro with each call
+        self.work_tax_brackets.append(np.inf)
+        for ii, left_bracket in self.work_tax_brackets:
+            rate = self.work_tax_rates[ii]
+            right_bracket = self.work_tax_brackets[ii + 1]
+            if left_bracket <= gross <= right_bracket:
+                work_tax_discount = self.work_tax_base_amounts[ii] + self.work_tax_rates[ii] * (gross - left_bracket)
+                break
+        return work_tax_discount
+        # TODO: heffingskortingen
+        # - algemene heffingskorting
+        # - arbeidskorting
+
+
+class Job:
+    def __init__(self, job_parameters, taxes: Taxes):
+        self.total_salary = job_parameters['amount']
+        self.holiday_allowance = job_parameters['holiday_allowance']
+        self.monthly_salary = self.total_salary / (1 + self.holiday_allowance) / 12
+
+    def get_salary(self, month):
+        pay = self.monthly_salary
+        if month % 12 + 1 == 5:
+            pay += self.total_salary * self.holiday_allowance / (1 + self.holiday_allowance)
+        return pay
+
+
+# Mortgage related
 def calc_nett_payment(gross_payment, interest_payment):
     payoff = gross_payment - interest_payment
     return payoff + (1 - 0.3705) * interest_payment
 
 
-def simulate(mortgage: Mortgage, settings):
-    gross_payments = []
-    nett_payments = []
+def simulate(job: Job, mortgage: Mortgage, settings):
+    gross_mortgage_payments = []
+    nett_mortgage_payments = []
     interest_payments = []
     size = []
-    for ii in range(settings['simulation']['length']*12):
+    for ii in range(settings['simulation']['length'] * 12):
         gross_payment, interest_payment = mortgage.repay()
 
-        gross_payments.append(gross_payment)
+        # Trek betaalde hypotheekrente af van totaal salaris / inkomen
+        gross_pay = job.get_salary(month=ii)
+        # nett_pay =
+        # total_taxable_income += gross_pay
+
+        gross_mortgage_payments.append(gross_payment)
         interest_payments.append(interest_payment)
 
         nett_payment = calc_nett_payment(gross_payment, interest_payment)
-        nett_payments.append(nett_payment)
+        nett_mortgage_payments.append(nett_payment)
 
         size.append(mortgage._size)
 
     sns.set()
-    print(gross_payments)
-    print(nett_payments)
+    print(gross_mortgage_payments)
+    print(nett_mortgage_payments)
     print(interest_payments)
 
-    plt.plot(gross_payments, label='gross')
-    plt.plot(nett_payments, label='nett')
+    plt.plot(gross_mortgage_payments, label='gross')
+    plt.plot(nett_mortgage_payments, label='nett')
     plt.plot(interest_payments, label='interest')
     plt.legend()
-    plt.ylim(0, max(gross_payments) * 1.1)
+    plt.ylim(0, max(gross_mortgage_payments) * 1.1)
     plt.show()
 
     plt.plot(size)
@@ -110,7 +164,9 @@ def init_mortgage(settings):
 def main():
     settings = load_settings()
     mortgage = init_mortgage(settings['mortgage'])
-    simulate(mortgage, settings)
+    taxes = Taxes(settings['taxes'])
+    job = Job(settings['salary'], taxes)
+    simulate(job, mortgage, settings)
 
 
 if __name__ == '__main__':
