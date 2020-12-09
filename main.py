@@ -85,13 +85,13 @@ class Taxes:
     def calc_work_tax_discounts(self, gross):
         # TODO: dont append, but cipy, otherwise array will gro with each call
         self.work_tax_brackets.append(np.inf)
-        for ii, left_bracket in self.work_tax_brackets:
+        for ii, left_bracket in enumerate(self.work_tax_brackets):
             rate = self.work_tax_rates[ii]
+            base_amount = self.work_tax_base_amounts[ii]
             right_bracket = self.work_tax_brackets[ii + 1]
             if left_bracket <= gross <= right_bracket:
-                work_tax_discount = self.work_tax_base_amounts[ii] + self.work_tax_rates[ii] * (gross - left_bracket)
-                break
-        return work_tax_discount
+                work_tax_discount = base_amount + rate * (gross - left_bracket)
+                return work_tax_discount
         # TODO: heffingskortingen
         # - algemene heffingskorting
         # - arbeidskorting
