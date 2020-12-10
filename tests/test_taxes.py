@@ -14,7 +14,7 @@ def test_income_taxes_zero():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 0
-    nett, tax = taxes.income_gross_to_nett(gross)
+    nett, tax = taxes.calc_income_tax(gross)
     assert nett == 0
     assert tax == 0
 
@@ -23,7 +23,7 @@ def test_income_taxes_left_bracket():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 68508
-    nett, tax = taxes.income_gross_to_nett(gross)
+    nett, tax = taxes.calc_income_tax(gross)
     assert pytest.approx(nett, 1e-6) == 42920.262
     assert pytest.approx(tax, 1e-6) == 25587.738
 
@@ -33,7 +33,7 @@ def test_income_taxes_right_bracket():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 100000
-    nett, tax = taxes.income_gross_to_nett(gross)
+    nett, tax = taxes.calc_income_tax(gross)
     assert pytest.approx(nett, 1e-6) == 58823.722
     assert pytest.approx(tax, 1e-6) == 41176.278
 
@@ -43,7 +43,7 @@ def test_work_tax_discount_zero():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 0
-    assert taxes.calc_work_tax_discounts(gross) == 0
+    assert taxes.calc_work_tax_discount(gross) == 0
 
 
 def test_work_tax_discount_max():
@@ -51,7 +51,7 @@ def test_work_tax_discount_max():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 98604
-    assert taxes.calc_work_tax_discounts(gross) == 0
+    assert taxes.calc_work_tax_discount(gross) == 0
 
 
 def test_work_tax_discount_too_high():
@@ -59,7 +59,7 @@ def test_work_tax_discount_too_high():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 200000
-    assert taxes.calc_work_tax_discounts(gross) == 0
+    assert taxes.calc_work_tax_discount(gross) == 0
 
 
 def test_work_tax_discount_50k():
@@ -67,7 +67,7 @@ def test_work_tax_discount_50k():
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 50000
-    assert pytest.approx(taxes.calc_work_tax_discounts(gross), 1e-6) == 2916.24
+    assert pytest.approx(taxes.calc_work_tax_discount(gross), 1e-6) == 2916.24
 
 
 def test_general_tax_discount_zero():

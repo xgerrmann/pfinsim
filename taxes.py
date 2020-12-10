@@ -11,7 +11,15 @@ class Taxes:
         self.general_tax_discount_base_amount = tax_parameters['regular_tax_discount']['base_amount']
         self.general_tax_discount_rates = tax_parameters['regular_tax_discount']['rates']
 
-    def income_gross_to_nett(self, gross):
+    def calc_nett_income(self, gross):
+        _, income_tax = self.calc_income_tax(gross)
+        work_tax_discount = self.calc_work_tax_discount(gross)
+        general_tax_discount = self.calc_general_tax_discount(gross)
+        total_tax = income_tax - work_tax_discount - general_tax_discount
+        nett_income = gross - total_tax
+        return nett_income, total_tax
+
+    def calc_income_tax(self, gross):
         nett = 0
         tax = 0
         brackets = self.income_tax_brackets + [np.inf]
@@ -26,7 +34,7 @@ class Taxes:
             tax += bucket_tax
         return nett, tax
 
-    def calc_work_tax_discounts(self, gross):
+    def calc_work_tax_discount(self, gross):
         brackets = self.work_tax_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets):
             rate = self.work_tax_rates[ii]
@@ -42,6 +50,6 @@ class Taxes:
             right_bracket = brackets[ii+1]
             rate = self.general_tax_discount_rates[ii]
             if left_bracket <= gross <= right_bracket:
-                print(f'left: {left_bracket}, right: {right_bracket}, rate: {rate}')
+                general_tax_discount = self.general_tax_discount_base_amount[ii] + rate * (gross - left_bracket)
                 general_tax_discount = self.general_tax_discount_base_amount[ii] + rate * (gross - left_bracket)
                 return general_tax_discount
