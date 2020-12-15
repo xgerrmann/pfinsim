@@ -1,0 +1,13 @@
+
+# Figure Properties
+figure.figsize: 10, 4
+
+# Put fonts in /usr/share/fonts/ttf/FONTNAME
+# Install fonts for matplotlib
+# https://scentellegher.github.io/visualization/2018/05/02/custom-fonts-matplotlib.html
+# Rename
+# Font Properties
+#font.family: Hiragino
+font.family: Lato
+font.size: 14
+#image.cmap: OrRd
