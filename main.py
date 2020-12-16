@@ -1,12 +1,11 @@
 # Simulation to compare different (personal) financial scenarios
-from enum import Enum
-
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
 
 import yaml
 
+from asset import Asset
+from mortgage import Mortgage, MortgageType
 from taxes import Taxes
 
 
@@ -16,51 +15,8 @@ def load_settings(file_name='settings.yml'):
     return settings
 
 
-class MortgageType(Enum):
-    LINEAR = 'linear'
-    ANNUITY = 'annuity'
-
-
 def perc_2_float(perc: str):
     return float(perc.replace('%', '')) / 100
-
-
-class Mortgage:
-    def __init__(self, rate, size, duration, type: MortgageType):
-        self._rate = perc_2_float(rate)
-        self._original_size = int(size)
-        self._size = int(size)
-        self._duration = int(duration)
-        self._type = type
-        self._annuity = self._calc_annuity()
-
-    def _calc_interest(self):
-        # TODO should this be different than just a simple division by the amount of months?
-        return self._size * self._rate / 12
-
-    def _calc_annuity(self):
-        # https: // www.hypotheekrente - annuiteitenhypotheek.nl / annuiteit - berekenen.php
-        n_periods = self._duration * 12
-        monthly_interest = self._rate / 12
-        return (monthly_interest / (1 - ((1 + monthly_interest) ** -n_periods))) * self._original_size
-
-    def repay(self):
-        if self._type == MortgageType.LINEAR:
-            interest = self._calc_interest()
-            payoff = self._original_size / self._duration / 12
-            self._size -= min(payoff, self._size)
-            total_payment = payoff + interest
-        else:
-            interest = self._calc_interest()
-            payoff = self._annuity - interest
-            self._size -= min(payoff, self._size)
-            total_payment = self._annuity
-
-        return total_payment, interest
-
-    @property
-    def size(self):
-        return self._size
 
 
 class Job:
@@ -82,7 +38,7 @@ def calc_nett_payment(gross_payment, interest_payment):
     return payoff + (1 - 0.3705) * interest_payment
 
 
-def simulate(job: Job, mortgage: Mortgage, settings):
+def simulate(job: Job, mortgage: Mortgage, stock_account: Asset, settings: dict):
     gross_mortgage_payments = []
     nett_mortgage_payments = []
     interest_payments = []
@@ -123,8 +79,14 @@ def init_mortgage(settings):
     rate = settings['interest_rate']
     size = settings['size']
     duration = settings['duration']
-    mortgage_type = MortgageType(settings['type'])
+    mortgage_type = settings['type']
     return Mortgage(rate, size, duration, mortgage_type)
+
+
+def init_stock_investment_account(settings):
+    initial_value = settings['stocks']['initial_value']
+    return_rate = settings['stocks']['rate']
+    return Asset(initial_value, return_rate)
 
 
 def main():
@@ -132,7 +94,8 @@ def main():
     mortgage = init_mortgage(settings['mortgage'])
     taxes = Taxes(settings['taxes'])
     job = Job(settings['salary'], taxes)
-    simulate(job, mortgage, settings)
+    stock_account = init_stock_investment_account(settings['stocks'])
+    simulate(job, mortgage, stock_account, settings)
 
 
 if __name__ == '__main__':

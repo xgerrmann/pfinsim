@@ -37,3 +37,7 @@ salary:
 simulation:
   step_size: 'month'
   length: 30 # years
+assets:
+  stocks:
+    returns: 0.07 # return / year
+    start_value: 5000 # Euro
