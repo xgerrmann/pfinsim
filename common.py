@@ -1,4 +1,5 @@
 import yaml
+import numpy as np
 
 
 def load_settings(file_name='settings.yml'):
@@ -9,3 +10,7 @@ def load_settings(file_name='settings.yml'):
 
 def perc_2_float(perc: str):
     return float(perc.replace('%', '')) / 100
+
+
+def month_to_year(month: int):
+    return 2021 + np.floor(month / 12)

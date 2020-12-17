@@ -1,10 +1,10 @@
 taxes:
 # https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/recht-op-hypotheekrenteaftrek
   mortgage_interest_deduction:
-    2020: 46%
-    2021: 43%
-    2022: 40%
-    2023: 37.05%
+    2020: 0.46
+    2021: 0.43
+    2022: 0.40
+    2023: 0.3705
   cost_of_home_ownership: 0.65% # eigen woning forfait (voor WOZ <= 1.080.000E)
   income_tax:
     brackets: [ 0, 68508 ]
@@ -22,8 +22,12 @@ taxes:
     base_amount: [2711, 2711, 0]
     rates: [0, -0.05672, 0]
   capital_gains_tax:
-    brackets: [0, 50000, 100000, 1000000]
-    rates: [0.0059, 0.0126, 0.0158]
+#    https://www:belastingdienst:nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/vermogen_en_aanmerkelijk_belang/vermogen/belasting_betalen_over_uw_vermogen/grondslag_sparen_en_beleggen/berekening-2021/:
+    savings_rate: 0.0003
+    investment_rate: 0.0569
+    tax_rate: 0.31
+    savings_weights: [0.67, 0.21, 0.0]
+    brackets: [0, 50000, 950000]
   # TODO: heffingskorting groene beleggingen
 economy:
   inflation: 3.15
@@ -44,4 +48,4 @@ simulation:
 assets:
   stocks:
     returns: 0.07 # return / year
-    start_value: 5000 # Euro
+    start_value: 10000 # Euro
