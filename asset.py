@@ -1,5 +1,6 @@
-
 class Asset:
+    exempt_from_capital_gains_tax = False
+
     def __init__(self, initial_value, return_rate):
         self.value = initial_value
         self.return_rate = return_rate

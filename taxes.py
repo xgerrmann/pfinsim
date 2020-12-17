@@ -1,4 +1,9 @@
+from typing import List
+
 import numpy as np
+
+from asset import Asset
+
 
 class Taxes:
     def __init__(self, tax_parameters):
@@ -10,14 +15,17 @@ class Taxes:
         self.general_tax_discount_brackets = tax_parameters['regular_tax_discount']['brackets']
         self.general_tax_discount_base_amount = tax_parameters['regular_tax_discount']['base_amount']
         self.general_tax_discount_rates = tax_parameters['regular_tax_discount']['rates']
+        self.capital_gains_tax_brackets = tax_parameters['capital_gains_tax']['brackets']
+        self.capital_gains_tax_rates = tax_parameters['capital_gains_tax']['rates']
 
-    def calc_nett_income(self, gross):
+        self.total_taxable_capital = 0
+
+    def calc_total_income_tax(self, gross):
         _, income_tax = self.calc_income_tax(gross)
         work_tax_discount = self.calc_work_tax_discount(gross)
         general_tax_discount = self.calc_general_tax_discount(gross)
         total_tax = income_tax - work_tax_discount - general_tax_discount
-        nett_income = gross - total_tax
-        return nett_income, total_tax
+        return total_tax
 
     def calc_income_tax(self, gross):
         nett = 0
@@ -25,13 +33,12 @@ class Taxes:
         brackets = self.income_tax_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets[:-1]):
             rate = self.income_tax_rates[ii]
-            right_bracket = min(brackets[ii + 1], gross)
-            bucket_size = right_bracket - left_bracket
-            if bucket_size <= 0:
-                break
-            bucket_tax = bucket_size * rate
-            nett += bucket_size - bucket_tax
-            tax += bucket_tax
+            if gross > left_bracket:
+                right_bracket = brackets[ii + 1]
+                bucket_size = min(right_bracket, gross)- left_bracket
+                bucket_tax = bucket_size * rate
+                nett += bucket_size - bucket_tax
+                tax += bucket_tax
         return nett, tax
 
     def calc_work_tax_discount(self, gross):
@@ -51,5 +58,30 @@ class Taxes:
             rate = self.general_tax_discount_rates[ii]
             if left_bracket <= gross <= right_bracket:
                 general_tax_discount = self.general_tax_discount_base_amount[ii] + rate * (gross - left_bracket)
-                general_tax_discount = self.general_tax_discount_base_amount[ii] + rate * (gross - left_bracket)
                 return general_tax_discount
+
+    def calculate_capital_gains_tax(self, month: int, assets: List[Asset]):
+        if month % 12 == 0:
+            self.total_taxable_capital = self._determine_total_taxable_capital(assets)
+        elif month % 12 == 3:
+            self._calc_capital_gains_tax(self.total_taxable_capital)
+
+    @staticmethod
+    def _determine_total_taxable_capital(assets: List[Asset]):
+        total_taxable_capital = 0
+        for asset in assets:
+            if asset.exempt_from_capital_gains_tax:
+                continue
+            total_taxable_capital += asset.value
+        return total_taxable_capital
+
+    def _calc_capital_gains_tax(self, total_capital: float):
+        brackets = self.capital_gains_tax_brackets + [np.inf]
+        capital_gains_tax = 0
+        for ii, left_bracket in enumerate(brackets):
+            if total_capital > left_bracket:
+                right_bracket = brackets[ii + 1]
+                bucket_size = min(total_capital, right_bracket) - left_bracket
+                rate = self.capital_gains_tax_rates[ii]
+                capital_gains_tax += rate * bucket_size
+        return capital_gains_tax

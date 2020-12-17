@@ -21,6 +21,10 @@ taxes:
     brackets: [0, 20711, 68507]
     base_amount: [2711, 2711, 0]
     rates: [0, -0.05672, 0]
+  capital_gains_tax:
+    brackets: [0, 50000, 100000, 1000000]
+    rates: [0.0059, 0.0126, 0.0158]
+  # TODO: heffingskorting groene beleggingen
 economy:
   inflation: 3.15
 mortgage:
