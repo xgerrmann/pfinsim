@@ -64,10 +64,18 @@ def main():
 
     # TODO: Calculate nett holiday allowance
     nett_y, tax_y = taxes.calc_income_tax(gross_y)
-    work_tax_discount_y = taxes.calc_work_tax_discount(gross_y_excl_bonuses)
-    general_tax_discount_y = taxes.calc_general_tax_discount(gross_y_excl_bonuses)
+    work_tax_discount_y = taxes.calc_work_tax_discount(gross_y)
+    general_tax_discount_y = taxes.calc_general_tax_discount(gross_y)
     total_discounts_y = work_tax_discount_y + general_tax_discount_y
     total_nett_y_incl_holiday_allowance = nett_y + total_discounts_y
+    total_nett_y_excl_holiday_allowance = 12 * nett_pay_m
+    nett_holiday_allowance = total_nett_y_incl_holiday_allowance - total_nett_y_excl_holiday_allowance
+    effective_holiday_allowance_tax = (holiday_allowance_y - nett_holiday_allowance) / holiday_allowance_y
+
+    print()
+    print('# HOLIDAY ALLOWANCE')
+    print(f'Nett holiday allowance: {nett_holiday_allowance:+8.2f}')
+    print(f'Effective holiday allowance tax: {effective_holiday_allowance_tax*100:+3.2f}%')
 
 
 if __name__ == '__main__':
