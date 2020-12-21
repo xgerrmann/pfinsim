@@ -48,15 +48,15 @@ class Taxes:
             if left_bracket < gross < brackets[ii + 1]:
                 return self.work_tax_rates[ii]
 
-    def calc_income_tax(self, gross_salary_m, gross_salary_y):
+    def calc_income_tax(self, gross_y):
         nett = 0
         tax = 0
         brackets = self.income_tax_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets[:-1]):
             rate = self.income_tax_rates[ii]
-            if gross_salary_y > left_bracket:
+            if gross_y > left_bracket:
                 right_bracket = brackets[ii + 1]
-                bucket_size = min(right_bracket, gross) - left_bracket
+                bucket_size = min(right_bracket, gross_y) - left_bracket
                 bucket_tax = bucket_size * rate
                 nett += bucket_size - bucket_tax
                 tax += bucket_tax
