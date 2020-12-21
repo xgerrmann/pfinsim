@@ -1,10 +1,10 @@
 # Simulation to compare different (personal) financial scenarios
 
-from asset import Asset
-from common import load_settings
-from job import Job
-from mortgage import Mortgage
-from taxes import Taxes
+from simulation.asset import Asset
+from simulation.common import load_settings
+from simulation.job import Job
+from simulation.mortgage import Mortgage
+from simulation.taxes import Taxes
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -30,15 +30,18 @@ def simulate(job: Job, mortgage: Mortgage, stock_account: Asset, taxes: Taxes, s
     hist = pd.DataFrame()
     for ii in range(settings['simulation']['length'] * 12):
         # Income
-        gross_pay = job.get_salary(month=ii)
+        gross_monthly_salary = job.get_salary(month=ii)
+        gross_yearly_salary = job.total_salary
+
+        # TODO: aftrekposten van bruto salaris aftrekken voordat netto wordt berekend
 
         # Expenses and taxes
         gross_mortgage_payment, mortgage_interest_payment = mortgage.repay()
-        mortgage_interest_tax = taxes.calc_mortgage_interest_tax(ii, mortgage_interest_payment, gross_pay)
+        mortgage_interest_tax = taxes.calc_mortgage_interest_tax(ii, mortgage_interest_payment, gross_yearly_salary)
 
         fixed_expenses = 500
 
-        income_tax = taxes.calc_total_income_tax(gross_pay)
+        income_tax = taxes.calc_total_income_tax(gross_monthly_salary, gross_yearly_salary)
 
         capital_gains_tax = taxes.calculate_capital_gains_tax(ii, [stock_account])
 

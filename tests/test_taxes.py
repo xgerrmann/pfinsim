@@ -1,16 +1,16 @@
 import pytest
 
-from main import load_settings
-from taxes import Taxes
+from simulation.main import load_settings
+from simulation.taxes import Taxes
 
 
 def test_load_settings():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     assert settings
 
 
 def test_income_taxes_zero():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 0
@@ -19,7 +19,7 @@ def test_income_taxes_zero():
     assert tax == 0
 
 def test_income_taxes_left_bracket():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 68508
@@ -29,7 +29,7 @@ def test_income_taxes_left_bracket():
 
 
 def test_income_taxes_right_bracket():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 100000
@@ -39,7 +39,7 @@ def test_income_taxes_right_bracket():
 
 
 def test_work_tax_discount_zero():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 0
@@ -47,7 +47,7 @@ def test_work_tax_discount_zero():
 
 
 def test_work_tax_discount_max():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 98604
@@ -55,7 +55,7 @@ def test_work_tax_discount_max():
 
 
 def test_work_tax_discount_too_high():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 200000
@@ -63,7 +63,7 @@ def test_work_tax_discount_too_high():
 
 
 def test_work_tax_discount_50k():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 50000
@@ -71,7 +71,7 @@ def test_work_tax_discount_50k():
 
 
 def test_general_tax_discount_zero():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 0
@@ -79,7 +79,7 @@ def test_general_tax_discount_zero():
 
 
 def test_general_tax_discount_50k():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 50000
@@ -87,7 +87,7 @@ def test_general_tax_discount_50k():
 
 
 def test_general_tax_discount_too_high():
-    settings = load_settings('../settings.yml')
+    settings = load_settings('../simulation/settings.yml')
     tax_parameters = settings['taxes']
     taxes = Taxes(tax_parameters)
     gross = 100000

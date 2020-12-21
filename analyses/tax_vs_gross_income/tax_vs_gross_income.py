@@ -3,8 +3,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-from main import load_settings
-from taxes import Taxes
+from simulation.main import load_settings
+from simulation.taxes import Taxes
 
 from matplotlib.ticker import FormatStrFormatter
 import numpy as np
@@ -13,7 +13,7 @@ import numpy as np
 
 SHOWPLOTS = False
 
-plt.style.use('../../plot_style.mplstyle')
+plt.style.use('../../simulation/plot_style.mplstyle')
 mpl.rcParams['toolbar'] = 'None'
 
 import locale
@@ -84,15 +84,15 @@ def plot_income_tax_(taxes: Taxes):
     for gross_income in gross_incomes:
         nett, tax = taxes.calc_income_tax(gross_income)
         tax_list.append(tax)
-        tax_list_perc.append(tax / gross_income)
+        tax_list_perc.append(tax / gross_income*100)
 
     plt.figure()
     plt.plot(gross_incomes, tax_list_perc)
     plt.title('Inkomen versus salaris', **hfont)
     plt.xlabel('Bruto jaarinkomen [€]', **hfont)
-    plt.ylabel('Belasting [€]', **hfont)
+    plt.ylabel('Belasting [%]', **hfont)
     set_tick_formatting()
-    plt.ylim([0.3, 0.45])
+    plt.ylim([30, 45])
     plt.xlim([0, max(gross_incomes)])
 
     plt.tight_layout()
@@ -100,7 +100,7 @@ def plot_income_tax_(taxes: Taxes):
 
 
 def plot_total_tax(taxes: Taxes):
-    income_start = 5000
+    income_start = 1
     income_end = 120000
     gross_incomes = range(income_start, income_end)
     tax_list = []
@@ -133,7 +133,7 @@ def plot_total_tax(taxes: Taxes):
 
 
 def main():
-    tax_settings = load_settings('../../settings.yml')['taxes']
+    tax_settings = load_settings('../../simulation/settings.yml')['taxes']
     taxes = Taxes(tax_settings)
     plot_working_tax_discount(taxes)
     plot_general_tax_discount(taxes)

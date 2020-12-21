@@ -2,8 +2,8 @@ from typing import List
 
 import numpy as np
 
-from asset import Asset
-from common import month_to_year
+from simulation.asset import Asset
+from simulation.common import month_to_year
 
 
 class Taxes:
@@ -29,56 +29,57 @@ class Taxes:
 
         self.total_taxable_capital = 0
 
-    def calc_total_income_tax(self, gross):
-        _, income_tax = self.calc_income_tax(gross)
+    def calc_total_income_tax(self, gross_salary_m, gross_salary_y):
+        _, income_tax = self.calc_income_tax(gross_salary_m, gross_salary_y)
         work_tax_discount = self.calc_work_tax_discount(gross)
         general_tax_discount = self.calc_general_tax_discount(gross)
         total_tax = income_tax - work_tax_discount - general_tax_discount
         print('INCOMETAX@@@')
         # TODO: divide ta discounts by 12 since they are on a yearly basis.
         # TODO: when do these discounts get deducted? from salary or in March when you do your taxes?
+        print(gross)
         print(income_tax, work_tax_discount, general_tax_discount)
+        print(total_tax)
         return total_tax
 
     def calc_highest_tax_bracket(self, gross):
         brackets = self.income_tax_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets[:-1]):
-            if left_bracket < gross < brackets[ii+1]:
+            if left_bracket < gross < brackets[ii + 1]:
                 return self.work_tax_rates[ii]
 
-
-    def calc_income_tax(self, gross):
+    def calc_income_tax(self, gross_salary_m, gross_salary_y):
         nett = 0
         tax = 0
         brackets = self.income_tax_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets[:-1]):
             rate = self.income_tax_rates[ii]
-            if gross > left_bracket:
+            if gross_salary_y > left_bracket:
                 right_bracket = brackets[ii + 1]
-                bucket_size = min(right_bracket, gross)- left_bracket
+                bucket_size = min(right_bracket, gross) - left_bracket
                 bucket_tax = bucket_size * rate
                 nett += bucket_size - bucket_tax
                 tax += bucket_tax
         return nett, tax
 
-    def calc_work_tax_discount(self, gross):
+    def calc_work_tax_discount(self, gross_y):
         brackets = self.work_tax_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets):
             rate = self.work_tax_rates[ii]
             base_amount = self.work_tax_base_amounts[ii]
             right_bracket = brackets[ii + 1]
-            if left_bracket <= gross <= right_bracket:
-                work_tax_discount = base_amount + rate * (gross - left_bracket)
-                return work_tax_discount
+            if left_bracket <= gross_y <= right_bracket:
+                work_tax_discount_y = base_amount + rate * (gross_y - left_bracket)
+                return work_tax_discount_y
 
-    def calc_general_tax_discount(self, gross):
+    def calc_general_tax_discount(self, gross_y):
         brackets = self.general_tax_discount_brackets + [np.inf]
         for ii, left_bracket in enumerate(brackets):
-            right_bracket = brackets[ii+1]
+            right_bracket = brackets[ii + 1]
             rate = self.general_tax_discount_rates[ii]
-            if left_bracket <= gross <= right_bracket:
-                general_tax_discount = self.general_tax_discount_base_amount[ii] + rate * (gross - left_bracket)
-                return general_tax_discount
+            if left_bracket <= gross_y <= right_bracket:
+                general_tax_discount_y = self.general_tax_discount_base_amount[ii] + rate * (gross_y - left_bracket)
+                return general_tax_discount_y
 
     def calculate_capital_gains_tax(self, month: int, assets: List[Asset]):
         if month % 12 == 0:
@@ -103,21 +104,21 @@ class Taxes:
             if total_capital > left_bracket:
                 savings_weight = self.capital_gains_tax_savings_weights[ii]
                 fictitious_return_rate = self.capital_gains_tax_savings_rate * savings_weight + \
-                                         self.capital_gains_tax_investment_rate * (1-savings_weight)
+                                         self.capital_gains_tax_investment_rate * (1 - savings_weight)
                 right_bracket = brackets[ii + 1]
                 bucket_size = min(total_capital, right_bracket) - left_bracket
                 bucket_rate = fictitious_return_rate * self.capital_gains_tax_rate
                 capital_gains_tax += bucket_rate * bucket_size
         return capital_gains_tax
 
-    def calc_mortgage_interest_tax(self, month, interest_payment, gross_income):
+    def calc_mortgage_interest_tax(self, month, interest_payment, gross_yearly_salary):
         year = month_to_year(month)
         if year in self.mortgage_interest_deduction:
             max_deduction_rate = self.mortgage_interest_deduction[year]
         else:
             max_deduction_rate = self.mortgage_interest_deduction[max(self.mortgage_interest_deduction.keys())]
 
-        highest_income_tax_bracket = self.calc_highest_tax_bracket(gross_income)
+        highest_income_tax_bracket = self.calc_highest_tax_bracket(gross_yearly_salary)
 
         mortgage_tax_deduction_rate = min(max_deduction_rate, highest_income_tax_bracket)
 

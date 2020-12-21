@@ -7,5 +7,6 @@ class Job:
     def get_salary(self, month):
         pay = self.monthly_salary
         if month % 12 == 4:
+            # Total salary before taxes is 108%
             pay += self.total_salary * self.holiday_allowance / (1 + self.holiday_allowance)
         return pay
