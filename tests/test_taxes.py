@@ -1,6 +1,6 @@
 import pytest
 
-from simulation.main import load_settings
+from simulation.simulation import load_settings
 from simulation.taxes import Taxes
 
 

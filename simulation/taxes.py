@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 
 from simulation.asset import Asset
-from simulation.common import month_to_year
+from simulation.common import month_to_year, Period
 
 
 class Taxes:
@@ -29,17 +29,13 @@ class Taxes:
 
         self.total_taxable_capital = 0
 
-    def calc_total_income_tax(self, gross_salary_m, gross_salary_y):
-        _, income_tax = self.calc_income_tax(gross_salary_m, gross_salary_y)
-        work_tax_discount = self.calc_work_tax_discount(gross)
-        general_tax_discount = self.calc_general_tax_discount(gross)
+    def calc_total_income_tax(self, gross_salary_y, period: Period = Period.YEAR):
+        _, income_tax = self.calc_income_tax(gross_salary_y)
+        work_tax_discount = self.calc_work_tax_discount(gross_salary_y)
+        general_tax_discount = self.calc_general_tax_discount(gross_salary_y)
         total_tax = income_tax - work_tax_discount - general_tax_discount
-        print('INCOMETAX@@@')
-        # TODO: divide ta discounts by 12 since they are on a yearly basis.
-        # TODO: when do these discounts get deducted? from salary or in March when you do your taxes?
-        print(gross)
-        print(income_tax, work_tax_discount, general_tax_discount)
-        print(total_tax)
+        if period == Period.MONTH:
+            total_tax /= 12
         return total_tax
 
     def calc_highest_tax_bracket(self, gross):

@@ -23,7 +23,7 @@ def main():
     job, taxes = init()
 
     # Calculations
-    gross_y_excl_bonuses = gross_y / (1+job.holiday_allowance)
+    gross_y_excl_bonuses = gross_y / (1 + job.holiday_allowance)
     work_tax_discount_y = taxes.calc_work_tax_discount(gross_y_excl_bonuses)
     general_tax_discount_y = taxes.calc_general_tax_discount(gross_y_excl_bonuses)
     work_tax_discount_m = work_tax_discount_y / 12

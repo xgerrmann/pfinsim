@@ -3,7 +3,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-from simulation.main import load_settings
+from simulation.simulation import load_settings
 from simulation.taxes import Taxes
 
 from matplotlib.ticker import FormatStrFormatter
@@ -26,11 +26,10 @@ colors = cmap(np.linspace(0, 1, n_colors))
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=colors)
 
 # hfont = {'fontname':'Lato'}
-hfont = {'fontname':'Lato','fontweight':'light'}
+hfont = {'fontname': 'Lato', 'fontweight': 'light'}
 
 
 def set_tick_formatting():
-
     plt.gca().xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
     plt.gca().yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
     for spine in plt.gca().spines:
@@ -84,7 +83,7 @@ def plot_income_tax_(taxes: Taxes):
     for gross_income in gross_incomes:
         nett, tax = taxes.calc_income_tax(gross_income)
         tax_list.append(tax)
-        tax_list_perc.append(tax / gross_income*100)
+        tax_list_perc.append(tax / gross_income * 100)
 
     plt.figure()
     plt.plot(gross_incomes, tax_list_perc)
