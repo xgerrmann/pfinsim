@@ -1,7 +1,5 @@
 from typing import List
 
-import numpy as np
-
 from .asset import Asset
 from .common import month_to_year, Period, INFINITY
 
