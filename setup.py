@@ -1,23 +1,33 @@
+import pathlib
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
+VERSION = '0.0.4'
 DESCRIPTION = 'Personal finance simulation package'
-LONG_DESCRIPTION = 'Package containing tools for analysing and simulating ones personal financial situation'
+
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+README = (HERE / "README.md").read_text()
 
 # Setting up
 setup(
-    # the name must match the folder name 'verysimplemodule'
     name="pfinsim",
     version=VERSION,
     author="Xander Gerrmann",
     author_email="<xander@xgerrmann.com>",
+    url='https://github.com/xgerrmann/pfinsim',
     description=DESCRIPTION,
-    long_description=LONG_DESCRIPTION,
-    packages=find_packages(),
-    install_requires=[],
+    long_description=README,
+    long_description_content_type="text/markdown",
+    packages=['pfinsim'],
+    install_requires=[
+        'PyYAML>=5.3.1'
+    ],
     keywords=['python', 'simulation', 'finance', 'personal'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
-    ]
+    ],
+    include_package_data=True,
 )

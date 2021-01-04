@@ -2,8 +2,8 @@ from typing import List
 
 import numpy as np
 
-from simulation.asset import Asset
-from simulation.common import month_to_year, Period
+from .asset import Asset
+from .common import month_to_year, Period, INFINITY
 
 
 class Taxes:
@@ -39,7 +39,7 @@ class Taxes:
         return total_tax
 
     def calc_highest_tax_bracket(self, gross):
-        brackets = self.income_tax_brackets + [np.inf]
+        brackets = self.income_tax_brackets + [INFINITY]
         for ii, left_bracket in enumerate(brackets[:-1]):
             if left_bracket < gross < brackets[ii + 1]:
                 return self.work_tax_rates[ii]
@@ -47,7 +47,7 @@ class Taxes:
     def calc_income_tax(self, gross_y):
         nett = 0
         tax = 0
-        brackets = self.income_tax_brackets + [np.inf]
+        brackets = self.income_tax_brackets + [INFINITY]
         for ii, left_bracket in enumerate(brackets[:-1]):
             rate = self.income_tax_rates[ii]
             if gross_y > left_bracket:
@@ -59,7 +59,7 @@ class Taxes:
         return nett, tax
 
     def calc_work_tax_discount(self, gross_y):
-        brackets = self.work_tax_brackets + [np.inf]
+        brackets = self.work_tax_brackets + [INFINITY]
         for ii, left_bracket in enumerate(brackets):
             rate = self.work_tax_rates[ii]
             base_amount = self.work_tax_base_amounts[ii]
@@ -69,7 +69,7 @@ class Taxes:
                 return work_tax_discount_y
 
     def calc_general_tax_discount(self, gross_y):
-        brackets = self.general_tax_discount_brackets + [np.inf]
+        brackets = self.general_tax_discount_brackets + [INFINITY]
         for ii, left_bracket in enumerate(brackets):
             right_bracket = brackets[ii + 1]
             rate = self.general_tax_discount_rates[ii]
@@ -94,7 +94,7 @@ class Taxes:
         return total_taxable_capital
 
     def _calc_capital_gains_tax(self, total_capital: float):
-        brackets = self.capital_gains_tax_brackets + [np.inf]
+        brackets = self.capital_gains_tax_brackets + [INFINITY]
         capital_gains_tax = 0
         for ii, left_bracket in enumerate(brackets[0:-1]):
             if total_capital > left_bracket:

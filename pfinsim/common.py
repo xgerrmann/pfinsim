@@ -1,7 +1,8 @@
 from enum import Enum
 
 import yaml
-import numpy as np
+
+INFINITY = float('inf')
 
 
 def load_settings(file_name='settings.yml'):
@@ -15,7 +16,7 @@ def perc_2_float(perc: str):
 
 
 def month_to_year(month: int):
-    return 2021 + np.floor(month / 12)
+    return 2021 + floor(month / 12)
 
 
 class Period(Enum):
