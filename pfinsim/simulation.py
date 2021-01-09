@@ -1,13 +1,11 @@
 # Simulation to compare different (personal) financial scenarios
 import argparse
 
-from simulation.asset import Asset
-from simulation.common import load_settings, Period
-from simulation.job import Job
-from simulation.mortgage import Mortgage
-from simulation.taxes import Taxes
-import pandas as pd
-import matplotlib.pyplot as plt
+from .asset import Asset
+from .common import load_settings, Period
+from .job import Job
+from .mortgage import Mortgage
+from .taxes import Taxes
 
 parser = argparse.ArgumentParser(description='Run personal finance simulation.',
                                  usage="'python3 -m simulation.simulation'")

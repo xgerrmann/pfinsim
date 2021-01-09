@@ -12,7 +12,7 @@ def load_settings(file_name: Optional[str] = None):
         with open(file_name) as file:
             settings = yaml.load(file, Loader=yaml.FullLoader)
     else:
-        settings = yaml.load(importlib.resources.read_text(resources, 'settings.yml'))
+        settings = yaml.load(importlib.resources.read_text(resources, 'settings.yml'), Loader=yaml.FullLoader)
     return settings
 
 

@@ -18,6 +18,8 @@ The following is currently supported
   * Monthly income
   * Holiday allowance
 
+Python >= 3.7 is required
+
 
 
 This project on [Github](https://github.com/xgerrmann/pfinsim)

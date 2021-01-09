@@ -1,6 +1,6 @@
 from enum import Enum
 
-from simulation.common import perc_2_float
+from .common import perc_2_float
 
 
 class MortgageType(Enum):
