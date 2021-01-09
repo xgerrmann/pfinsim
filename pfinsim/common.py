@@ -1,7 +1,6 @@
 from enum import Enum
 import importlib.resources
 from typing import Optional
-from . import resources
 import yaml
 
 INFINITY = float('inf')
@@ -12,7 +11,7 @@ def load_settings(file_name: Optional[str] = None):
         with open(file_name) as file:
             settings = yaml.load(file, Loader=yaml.FullLoader)
     else:
-        settings = yaml.load(importlib.resources.read_text(resources, 'settings.yml'), Loader=yaml.FullLoader)
+        settings = yaml.load(importlib.resources.read_text(f'{__package__}.resources', 'settings.yml'), Loader=yaml.FullLoader)
     return settings
 
 

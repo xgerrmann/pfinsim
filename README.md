@@ -26,6 +26,16 @@ This project on [Github](https://github.com/xgerrmann/pfinsim)
 
 
 
+# Deployment
+
+```
+rm build dist -r
+python3 setup.py sdist bdist_wheel
+twine upload dist/*
+```
+
+ You will be asked for your PyPI (python package index) username and password for authentication, enter these.
+
 ## Log
 
 * Uploaded to pypi as `pfinsim` 2020-12-26
