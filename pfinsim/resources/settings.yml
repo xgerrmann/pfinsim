@@ -1,0 +1,51 @@
+taxes:
+# https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/recht-op-hypotheekrenteaftrek
+  mortgage_interest_deduction:
+    2020: 0.46
+    2021: 0.43
+    2022: 0.40
+    2023: 0.3705
+  cost_of_home_ownership: 0.65% # eigen woning forfait (voor WOZ <= 1.080.000E)
+  income_tax:
+    brackets: [ 0, 68508 ]
+    rates: [ 0.3735, 0.4950 ]
+  wealth_tax:
+    brackets: [ 0, 72798, 1005573 ]
+    rates: [0.01789, 0.04185, 0.0528]
+  work_discount:
+    # https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/tabel-arbeidskorting-2020
+    brackets: [0, 9921, 21430, 34954, 98604]
+    rates: [0.02812, 0.28812, 0.01656, -0.06, 0.0]
+    base_amounts: [0, 279, 3595, 3819, 0]
+  regular_tax_discount:
+    brackets: [0, 20711, 68507]
+    base_amount: [2711, 2711, 0]
+    rates: [0, -0.05672, 0]
+  capital_gains_tax:
+#    https://www:belastingdienst:nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/vermogen_en_aanmerkelijk_belang/vermogen/belasting_betalen_over_uw_vermogen/grondslag_sparen_en_beleggen/berekening-2021/:
+    savings_rate: 0.0003
+    investment_rate: 0.0569
+    tax_rate: 0.31
+    savings_weights: [0.67, 0.21, 0.0]
+    brackets: [0, 50000, 950000]
+  # TODO: heffingskorting groene beleggingen
+economy:
+  inflation: 3.15
+mortgage:
+  duration: 30 # years
+  size: 300000
+  interest_rate: 1.7%
+  interest_discount: 15%
+  interest_discount_bounds: [0.5, 1]
+#  type: 'linear'
+  type: 'annuity'
+salary:
+  amount: 55000 # Euro / year
+  holiday_allowance: 0.08
+simulation:
+  step_size: 'month'
+  length: 30 # years
+assets:
+  stocks:
+    returns: 0.07 # return / year
+    start_value: 10000 # Euro
