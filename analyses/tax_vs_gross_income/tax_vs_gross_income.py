@@ -81,7 +81,7 @@ def plot_income_tax_(taxes: Taxes):
     tax_list = []
     tax_list_perc = []
     for gross_income in gross_incomes:
-        nett, tax = taxes.calc_income_tax(gross_income)
+        tax, _ = taxes.calc_income_tax(gross_income)
         tax_list.append(tax)
         tax_list_perc.append(tax / gross_income * 100)
 

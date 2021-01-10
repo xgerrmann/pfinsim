@@ -39,7 +39,8 @@ def main():
     print(f'Monthly salary:       {+salary_m:+10.2f} (100% / 12)')
     print(f'Holiday allowance:    {+holiday_allowance_y:+10.2f} ({holiday_allowance_fraction * 100:3.0f}%)')
 
-    nett_y, tax_y = taxes.calc_income_tax(gross_y_excl_bonuses)
+    tax_y, _ = taxes.calc_income_tax(gross_y_excl_bonuses)
+    nett_y = gross_y_excl_bonuses - tax_y
 
     total_dicounts_m = work_tax_discount_m + general_tax_discount_m
     tax_m = tax_y / 12
@@ -63,7 +64,8 @@ def main():
     print(f'Montly nett salary:   {nett_pay_m:10.2f}')
 
     # TODO: Calculate nett holiday allowance
-    nett_y, tax_y = taxes.calc_income_tax(gross_y)
+    tax_y, _ = taxes.calc_income_tax(gross_y)
+    nett_y = gross_y - tax_y
     work_tax_discount_y = taxes.calc_work_tax_discount(gross_y)
     general_tax_discount_y = taxes.calc_general_tax_discount(gross_y)
     total_discounts_y = work_tax_discount_y + general_tax_discount_y

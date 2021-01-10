@@ -29,7 +29,7 @@ This project on [Github](https://github.com/xgerrmann/pfinsim)
 # Deployment
 
 ```
-rm build dist -r
+rm build dist *.egg-info -r
 python3 setup.py sdist bdist_wheel
 twine upload dist/*
 ```

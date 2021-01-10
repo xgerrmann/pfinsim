@@ -18,24 +18,21 @@ def test_load_settings_file(tax_parameters):
 def test_income_taxes_zero(tax_parameters):
     taxes = Taxes(tax_parameters)
     gross = 0
-    nett, tax = taxes.calc_income_tax(gross)
-    assert nett == 0
+    tax, _ = taxes.calc_income_tax(gross)
     assert tax == 0
 
 
 def test_income_taxes_left_bracket(tax_parameters):
     taxes = Taxes(tax_parameters)
     gross = 68508
-    nett, tax = taxes.calc_income_tax(gross)
-    assert pytest.approx(nett, 1e-6) == 42920.262
+    tax, _ = taxes.calc_income_tax(gross)
     assert pytest.approx(tax, 1e-6) == 25587.738
 
 
 def test_income_taxes_right_bracket(tax_parameters):
     taxes = Taxes(tax_parameters)
     gross = 100000
-    nett, tax = taxes.calc_income_tax(gross)
-    assert pytest.approx(nett, 1e-6) == 58823.722
+    tax, _ = taxes.calc_income_tax(gross)
     assert pytest.approx(tax, 1e-6) == 41176.278
 
 

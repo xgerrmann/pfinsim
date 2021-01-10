@@ -28,7 +28,7 @@ class Taxes:
         self.total_taxable_capital = 0
 
     def calc_total_income_tax(self, gross_salary_y, period: Period = Period.YEAR):
-        _, income_tax = self.calc_income_tax(gross_salary_y)
+        income_tax, _ = self.calc_income_tax(gross_salary_y)
         work_tax_discount = self.calc_work_tax_discount(gross_salary_y)
         general_tax_discount = self.calc_general_tax_discount(gross_salary_y)
         total_tax = income_tax - work_tax_discount - general_tax_discount
@@ -43,18 +43,19 @@ class Taxes:
                 return self.work_tax_rates[ii]
 
     def calc_income_tax(self, gross_y):
-        nett = 0
-        tax = 0
+        total_tax = 0
         brackets = self.income_tax_brackets + [INFINITY]
+        tax_per_bucket = []
         for ii, left_bracket in enumerate(brackets[:-1]):
             rate = self.income_tax_rates[ii]
+            bucket_tax = 0
             if gross_y > left_bracket:
                 right_bracket = brackets[ii + 1]
                 bucket_size = min(right_bracket, gross_y) - left_bracket
                 bucket_tax = bucket_size * rate
-                nett += bucket_size - bucket_tax
-                tax += bucket_tax
-        return nett, tax
+                total_tax += bucket_tax
+            tax_per_bucket.append(bucket_tax)
+        return total_tax, tax_per_bucket
 
     def calc_work_tax_discount(self, gross_y):
         brackets = self.work_tax_brackets + [INFINITY]

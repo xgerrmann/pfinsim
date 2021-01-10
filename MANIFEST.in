@@ -1,1 +1,2 @@
-include pfinsim/settings.yml
+include pfinsim/resources/settings.yml
+include pfinsim/resources/__init__.py
